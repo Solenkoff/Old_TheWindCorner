@@ -1,0 +1,32 @@
+﻿@using TheWindCorner.Data.Models.Entities
+@model IEnumerable<Item>
+
+<h2>All Items</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>ItemType</th>
+            <th>Year</th>
+            <th>Actions</th>
+        </tr>
+    </thead>   
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Category</td>
+                <td>@item.ItemType</td>
+                <td>@item.Year</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                </td>
+            </tr>
+        }   
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add New Item</a>
