@@ -8,7 +8,7 @@ using TheWindCorner.Data.Models.User;
 
 namespace TheWindCorner.Data
 {
-   
+
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
@@ -31,23 +31,36 @@ namespace TheWindCorner.Data
         public virtual DbSet<SpotComment> SpotComments { get; set; } = null!;
         public virtual DbSet<ItemComment> ItemComments { get; set; } = null!;
         public virtual DbSet<WantedItemComment> WantedItemComments { get; set; } = null!;
+        public virtual DbSet<EventComment> EventComments { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
         public virtual DbSet<Event> Events { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
 
-         
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+            builder.Entity<Spot>()
+                .HasOne(s => s.AddedByUser)
+                .WithMany(u => u.AddedSpots)
+                .HasForeignKey(s => s.AddedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.HomeSpot)
+                .WithMany()
+                .HasForeignKey(u => u.HomeSpotId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
     }
-    
+
 
 }
- 

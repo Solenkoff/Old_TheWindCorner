@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheWindCorner.Data;
 
@@ -11,9 +12,11 @@ using TheWindCorner.Data;
 namespace TheWindCorner.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260313232033_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,9 +179,6 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("nvarchar(2000)")
                         .HasComment("A full description of the event");
 
-                    b.Property<Guid?>("ImageId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -186,7 +186,8 @@ namespace TheWindCorner.Data.Migrations
                         .HasComment("The location, where the event is to be held");
 
                     b.Property<Guid?>("SpotId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The Identifier of the spot, where the event takes place");
 
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2")
@@ -204,11 +205,50 @@ namespace TheWindCorner.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
-
                     b.HasIndex("SpotId");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("TheWindCorner.Data.Models.Entities.EventComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the comment made");
+
+                    b.Property<DateTime>("CommentedOn")
+                        .HasColumnType("datetime2")
+                        .HasComment("The date and time the comment was added or edited");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasComment("The full text of the comment");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the event, that was commented");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasComment("If the comment has been deleted");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the user, who made the comment");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("EventComments", t =>
+                        {
+                            t.HasComment("The comment on an event");
+                        });
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Image", b =>
@@ -218,10 +258,22 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasComment("Image Identifier");
 
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the related event");
+
+                    b.Property<Guid?>("ItemId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the related item");
+
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasComment("The path to the image");
+
+                    b.Property<Guid?>("SpotId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the related spot");
 
                     b.Property<string>("Text")
                         .HasMaxLength(1000)
@@ -233,9 +285,24 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasComment("A short descriptive title for the image");
 
+                    b.Property<Guid?>("WantedItemId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The identifier of the related wanted item");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("SpotId");
+
+                    b.HasIndex("WantedItemId");
+
+                    b.ToTable("Images", t =>
+                        {
+                            t.HasCheckConstraint("CK_Image_OnlyOneParent", "(\r\n                (CASE WHEN \"ItemId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"SpotId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"EventId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"WantedItemId\" IS NOT NULL THEN 1 ELSE 0 END)\r\n              ) = 1");
+                        });
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Item", b =>
@@ -263,9 +330,6 @@ namespace TheWindCorner.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
                         .HasComment("A full description of the item");
-
-                    b.Property<Guid?>("ImageId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit")
@@ -313,8 +377,6 @@ namespace TheWindCorner.Data.Migrations
                         .HasComment("The Year of the Item's production or collection");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("OwnerId");
 
@@ -407,7 +469,7 @@ namespace TheWindCorner.Data.Migrations
 
                     b.Property<Guid>("AddedByUserId")
                         .HasColumnType("uniqueidentifier")
-                        .HasComment("The identifier of the user, who added the spot");
+                        .HasComment("The identifier of the user, who added this spot");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2")
@@ -419,9 +481,6 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasComment("A full description of the spot");
 
-                    b.Property<Guid?>("ImageId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit")
                         .HasComment("If the spot has been approved for listing");
@@ -430,11 +489,13 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("bit")
                         .HasComment("If the spot has been deleted");
 
-                    b.Property<double>("Latitude")
+                    b.Property<double?>("Latitude")
+                        .IsRequired()
                         .HasColumnType("float")
                         .HasComment("The latitude of the spot's location");
 
-                    b.Property<double>("Longitude")
+                    b.Property<double?>("Longitude")
+                        .IsRequired()
                         .HasColumnType("float")
                         .HasComment("The longitude of the spot's location");
 
@@ -446,10 +507,7 @@ namespace TheWindCorner.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedByUserId")
-                        .IsUnique();
-
-                    b.HasIndex("ImageId");
+                    b.HasIndex("AddedByUserId");
 
                     b.ToTable("Spots", t =>
                         {
@@ -515,8 +573,17 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasComment("A full description of the wanted item");
 
-                    b.Property<Guid?>("ImageId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit")
+                        .HasComment("If the wanted item has been approved for listing");
+
+                    b.Property<bool>("IsBought")
+                        .HasColumnType("bit")
+                        .HasComment("If the wanted item has been bought");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasComment("If the wanted item has been deleted");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier")
@@ -529,8 +596,6 @@ namespace TheWindCorner.Data.Migrations
                         .HasComment("A short descriptive title for the wanted item");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ImageId");
 
                     b.HasIndex("OwnerId");
 
@@ -614,6 +679,10 @@ namespace TheWindCorner.Data.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasComment("The first name of the user");
 
+                    b.Property<Guid?>("HomeSpotId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("The Identifier of the home spot of the user");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
                         .HasComment("If the user has been deleted");
@@ -655,6 +724,9 @@ namespace TheWindCorner.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("SpotId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -666,6 +738,8 @@ namespace TheWindCorner.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("HomeSpotId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -673,6 +747,8 @@ namespace TheWindCorner.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SpotId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -730,32 +806,70 @@ namespace TheWindCorner.Data.Migrations
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Event", b =>
                 {
-                    b.HasOne("TheWindCorner.Data.Models.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("TheWindCorner.Data.Models.Entities.Spot", "Spot")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("SpotId");
-
-                    b.Navigation("Image");
 
                     b.Navigation("Spot");
                 });
 
+            modelBuilder.Entity("TheWindCorner.Data.Models.Entities.EventComment", b =>
+                {
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Event", "Event")
+                        .WithMany("Comments")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TheWindCorner.Data.Models.User.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Image", b =>
+                {
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Event", "Event")
+                        .WithMany("Images")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Item", "Item")
+                        .WithMany("Images")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Spot", "Spot")
+                        .WithMany("Images")
+                        .HasForeignKey("SpotId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TheWindCorner.Data.Models.Entities.WantedItem", "WantedItem")
+                        .WithMany("Images")
+                        .HasForeignKey("WantedItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Spot");
+
+                    b.Navigation("WantedItem");
+                });
+
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Item", b =>
                 {
-                    b.HasOne("TheWindCorner.Data.Models.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("TheWindCorner.Data.Models.User.ApplicationUser", "Owner")
                         .WithMany("ItemsForSale")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Image");
 
                     b.Navigation("Owner");
                 });
@@ -793,18 +907,12 @@ namespace TheWindCorner.Data.Migrations
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Spot", b =>
                 {
                     b.HasOne("TheWindCorner.Data.Models.User.ApplicationUser", "AddedByUser")
-                        .WithOne("HomeSpot")
-                        .HasForeignKey("TheWindCorner.Data.Models.Entities.Spot", "AddedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("AddedSpots")
+                        .HasForeignKey("AddedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("TheWindCorner.Data.Models.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.Navigation("AddedByUser");
-
-                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.SpotComment", b =>
@@ -828,17 +936,11 @@ namespace TheWindCorner.Data.Migrations
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.WantedItem", b =>
                 {
-                    b.HasOne("TheWindCorner.Data.Models.Entities.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId");
-
                     b.HasOne("TheWindCorner.Data.Models.User.ApplicationUser", "Owner")
                         .WithMany("WantedItems")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Image");
 
                     b.Navigation("Owner");
                 });
@@ -862,24 +964,55 @@ namespace TheWindCorner.Data.Migrations
                     b.Navigation("WantedItem");
                 });
 
+            modelBuilder.Entity("TheWindCorner.Data.Models.User.ApplicationUser", b =>
+                {
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Spot", "HomeSpot")
+                        .WithMany()
+                        .HasForeignKey("HomeSpotId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TheWindCorner.Data.Models.Entities.Spot", null)
+                        .WithMany("HomeSpotUsers")
+                        .HasForeignKey("SpotId");
+
+                    b.Navigation("HomeSpot");
+                });
+
+            modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Event", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Item", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.Spot", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Events");
+
+                    b.Navigation("HomeSpotUsers");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.Entities.WantedItem", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("TheWindCorner.Data.Models.User.ApplicationUser", b =>
                 {
-                    b.Navigation("HomeSpot");
+                    b.Navigation("AddedSpots");
 
                     b.Navigation("ItemsForSale");
 

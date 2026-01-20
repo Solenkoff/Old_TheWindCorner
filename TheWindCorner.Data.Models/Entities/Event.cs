@@ -2,7 +2,7 @@
 {
     using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
-
+    using System.ComponentModel.DataAnnotations.Schema;
     using TheWindCorner.Data.Models.Entities.Enums;
 
     using static TheWindCorner.Common.EntityValidationConstants.Event;
@@ -43,20 +43,23 @@
         [Comment("The location, where the event is to be held")]
         public string Location { get; set; } = null!;
 
-        [Comment("The spot, where the event is to be held")]
-        public Spot? Spot { get; set; }
-
         [Required]
         [EnumDataType(typeof(EventStatus))]
         [Comment("The status of the event")]
         public EventStatus Status { get; set; } = EventStatus.Upcoming;
 
+        [Comment("The Identifier of the spot, where the event takes place")]
+        public Guid? SpotId { get; set; }
+
+        [ForeignKey(nameof(SpotId))]
+        [Comment("The spot, where the event takes place")]
+        public Spot? Spot { get; set; }
 
         [Comment("All images of the event")]
         public virtual ICollection<Image> Images { get; set; } = new HashSet<Image>();
 
         [Comment("All the comments made on the event")]
-        public virtual ICollection<ItemComment> Comments { get; set; } = new HashSet<ItemComment>();
+        public virtual ICollection<EventComment> Comments { get; set; } = new HashSet<EventComment>();
 
     }
 }

@@ -31,6 +31,18 @@
             public const string ContentMaxLengthMassage = "Wanted item comment should not be more than 500 characters long!";
         }
 
+        public static class SpotComment
+        {
+            public const string ContentMinLengthMassage = "Item Comment should be at least 2 characters long!";
+            public const string ContentMaxLengthMassage = "Item Comment should not be more than 1000 characters long!";
+        }
+
+        public static class EventComment
+        {
+            public const string ContentMinLengthMassage = "Event Comment should be at least 2 characters long!";
+            public const string ContentMaxLengthMassage = "Event Comment should not be more than 1000 characters long!";
+        }
+
         public static class Spot
         {
             public const string NameMinLengthMessage = "Name should be at least 3 characters long!";
@@ -43,11 +55,6 @@
             public const string LongitudeValidationMessage = "Longitude must be between -180 and 180 degrees.";
         }
 
-        public static class SpotComment
-        {
-            public const string ContentMinLengthMassage = "Item Comment should be at least 2 characters long!";
-            public const string ContentMaxLengthMassage = "Item Comment should not be more than 1000 characters long!";
-        }
 
         public static class User
         {

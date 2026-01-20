@@ -5,7 +5,7 @@
 
     using TheWindCorner.Data;
     using TheWindCorner.Data.Models.Entities;
-    using TheWindCorner.Data.Models.Enums;
+    using TheWindCorner.Data.Models.Entities.Enums;
     using TheWindCorner.Web.ViewModels.Item;
 
     public class ItemController : BaseController

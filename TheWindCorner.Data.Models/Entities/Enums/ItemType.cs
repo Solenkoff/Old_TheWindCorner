@@ -1,10 +1,10 @@
-﻿namespace TheWindCorner.Data.Models.Enums
+﻿namespace TheWindCorner.Data.Models.Entities.Enums
 {
    
     public enum ItemType
     {
         Board = 1,
-        Sale = 2,
+        Sail = 2,
         Mast = 3,
         Boom = 4,
         Extension = 5,

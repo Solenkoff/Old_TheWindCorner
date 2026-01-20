@@ -3,6 +3,7 @@
 
     public enum EventStatus
     {
+        Unknown = 0,
         Upcoming = 1,
         Ongoing = 2,
         Finished = 3,

@@ -13,8 +13,7 @@
                 .HasKey(e => e.Id);
 
             builder.Property(e => e.Status)
-                .IsRequired()
-                .HasDefaultValue(EventStatus.Upcoming);
+                .IsRequired();
 
         }
     }

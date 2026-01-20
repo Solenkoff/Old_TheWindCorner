@@ -4,7 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    using System.ComponentModel.DataAnnotations.Schema;
     using TheWindCorner.Data.Models.Entities;
 
     using static TheWindCorner.Common.EntityValidationConstants.User;
@@ -40,6 +40,10 @@
         [Comment("The phone number of the user")]
         public override string? PhoneNumber { get; set; }
 
+        [Comment("The Identifier of the home spot of the user")]
+        public Guid? HomeSpotId { get; set; }
+
+        [ForeignKey(nameof(HomeSpotId))]
         [Comment("The home spot of the user")]
         public Spot? HomeSpot { get; set; }
 
@@ -62,8 +66,10 @@
         public virtual ICollection<Item> ItemsForSale { get; set; } = new HashSet<Item>();
 
         [Comment("All the items listed, that the user is looking for")]
-        public virtual ICollection<WantedItem> WantedItems { get; set; } = new HashSet<WantedItem>();    
+        public virtual ICollection<WantedItem> WantedItems { get; set; } = new HashSet<WantedItem>();
 
+        [Comment("Spots added by this user")]
+        public virtual ICollection<Spot> AddedSpots { get; set; } = new HashSet<Spot>();
 
         //public virtual ICollection<IdentityUserRole<Guid>> Roles { get; set; }
 

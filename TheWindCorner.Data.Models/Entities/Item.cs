@@ -6,9 +6,9 @@
     using Microsoft.EntityFrameworkCore;
 
     using TheWindCorner.Data.Models.Entities.Contracts;
-    using TheWindCorner.Web.Infrastructure.Attributes;
-    using TheWindCorner.Data.Models.Enums;
+    using TheWindCorner.Data.Models.Entities.Enums;
     using TheWindCorner.Data.Models.User;
+    using TheWindCorner.Web.Infrastructure.Attributes;
 
     using static TheWindCorner.Common.EntityValidationConstants.Item;
     using static TheWindCorner.Common.EntityValidationMessages.Item;
@@ -97,3 +97,4 @@
 
     }
 }
+

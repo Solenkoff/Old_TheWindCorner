@@ -26,51 +26,6 @@ namespace TheWindCorner.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false, comment: "The username of the user"),
-                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true, comment: "The first name of the user"),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "The last name of the user"),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true, comment: "The phone number of the user"),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time when the user has been created"),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "The date and time when the user has been modified"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the user has been deleted"),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "The date and time when the user has been deleted"),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Image Identifier"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true, comment: "A short descriptive title for the image"),
-                    Text = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true, comment: "Text added to the image"),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The path to the image")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -104,12 +59,6 @@ namespace TheWindCorner.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,12 +73,6 @@ namespace TheWindCorner.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,12 +91,39 @@ namespace TheWindCorner.Data.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false, comment: "The username of the user"),
+                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true, comment: "The first name of the user"),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "The last name of the user"),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true, comment: "The phone number of the user"),
+                    HomeSpotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The Identifier of the home spot of the user"),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time when the user has been created"),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "The date and time when the user has been modified"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the user has been deleted"),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "The date and time when the user has been deleted"),
+                    SpotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,6 +147,38 @@ namespace TheWindCorner.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Item Identifier"),
+                    Category = table.Column<int>(type: "int", nullable: false, comment: "The Category of the Item"),
+                    ItemType = table.Column<int>(type: "int", nullable: false, comment: "The Type of the Item"),
+                    Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false, comment: "A short descriptive title for the item"),
+                    Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "The Size of the Item"),
+                    Brand = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true, comment: "The Brand Name of the Item"),
+                    Model = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true, comment: "The Model Name of the Item"),
+                    Year = table.Column<int>(type: "int", nullable: false, comment: "The Year of the Item's production or collection"),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false, comment: "The Price of the Item"),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "A full description of the item"),
+                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the item was listed for sale"),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been approved for listing"),
+                    IsSold = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been sold"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been deleted"),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The Identifier of the Item's Owner")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Items_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                },
+                comment: "Item listed for sale");
+
+            migrationBuilder.CreateTable(
                 name: "Notifications",
                 columns: table => new
                 {
@@ -194,47 +196,9 @@ namespace TheWindCorner.Data.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Notification to the admin about user's action");
-
-            migrationBuilder.CreateTable(
-                name: "Items",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Item Identifier"),
-                    Category = table.Column<int>(type: "int", nullable: false, comment: "The Category of the Item"),
-                    ItemType = table.Column<int>(type: "int", nullable: false, comment: "The Type of the Item"),
-                    Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false, comment: "A short descriptive title for the item"),
-                    Size = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true, comment: "The Size of the Item"),
-                    Brand = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true, comment: "The Brand Name of the Item"),
-                    Model = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true, comment: "The Model Name of the Item"),
-                    Year = table.Column<int>(type: "int", nullable: false, comment: "The Year of the Item's production or collection"),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false, comment: "The Price of the Item"),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "A full description of the item"),
-                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the item was listed for sale"),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been approved for listing"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been deleted"),
-                    IsSold = table.Column<bool>(type: "bit", nullable: false, comment: "If the Item has been sold"),
-                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The Identifier of the Item's Owner")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Items", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Items_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Items_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
-                },
-                comment: "Item listed for sale");
 
             migrationBuilder.CreateTable(
                 name: "Spots",
@@ -243,13 +207,12 @@ namespace TheWindCorner.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the spot"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "The name of the spot"),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "A full description of the spot"),
-                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Latitude = table.Column<double>(type: "float", nullable: false, comment: "The latitude of the spot's location"),
                     Longitude = table.Column<double>(type: "float", nullable: false, comment: "The longitude of the spot's location"),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the spot was added"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the spot has been deleted"),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false, comment: "If the spot has been approved for listing"),
-                    AddedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the user, who added the spot")
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the spot has been deleted"),
+                    AddedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the user, who added this spot")
                 },
                 constraints: table =>
                 {
@@ -260,11 +223,6 @@ namespace TheWindCorner.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Spots_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
                 },
                 comment: "A location, where one of the wind-sports can be practiced");
 
@@ -275,8 +233,10 @@ namespace TheWindCorner.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the wanted item"),
                     Title = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false, comment: "A short descriptive title for the wanted item"),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "A full description of the wanted item"),
-                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the sought item was listed"),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false, comment: "If the wanted item has been approved for listing"),
+                    IsBought = table.Column<bool>(type: "bit", nullable: false, comment: "If the wanted item has been bought"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the wanted item has been deleted"),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the user seeking the item")
                 },
                 constraints: table =>
@@ -287,12 +247,7 @@ namespace TheWindCorner.Data.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_WantedItems_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Item that an user is looking for");
 
@@ -315,13 +270,13 @@ namespace TheWindCorner.Data.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ItemComments_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 },
                 comment: "The comment on an item");
 
@@ -336,18 +291,12 @@ namespace TheWindCorner.Data.Migrations
                     Start = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the event starts"),
                     End = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time, when the event ends"),
                     Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "The location, where the event is to be held"),
-                    SpotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false, comment: "The status of the event")
+                    Status = table.Column<int>(type: "int", nullable: false, comment: "The status of the event"),
+                    SpotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The Identifier of the spot, where the event takes place")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Events_Images_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Images",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Events_Spots_SpotId",
                         column: x => x.SpotId,
@@ -374,13 +323,13 @@ namespace TheWindCorner.Data.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SpotComments_Spots_SpotId",
                         column: x => x.SpotId,
                         principalTable: "Spots",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 },
                 comment: "The comment on an spot");
 
@@ -403,15 +352,87 @@ namespace TheWindCorner.Data.Migrations
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_WantedItemComments_WantedItems_WantedItemId",
                         column: x => x.WantedItemId,
                         principalTable: "WantedItems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 },
                 comment: "The comment on an wanted item");
+
+            migrationBuilder.CreateTable(
+                name: "EventComments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the comment made"),
+                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "The full text of the comment"),
+                    CommentedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time the comment was added or edited"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "If the comment has been deleted"),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the user, who made the comment"),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "The identifier of the event, that was commented")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventComments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventComments_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventComments_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                },
+                comment: "The comment on an event");
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Image Identifier"),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true, comment: "A short descriptive title for the image"),
+                    Text = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true, comment: "Text added to the image"),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "The path to the image"),
+                    ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The identifier of the related item"),
+                    WantedItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The identifier of the related wanted item"),
+                    SpotId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The identifier of the related spot"),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "The identifier of the related event")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.CheckConstraint("CK_Image_OnlyOneParent", "(\r\n                (CASE WHEN \"ItemId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"SpotId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"EventId\" IS NOT NULL THEN 1 ELSE 0 END) +\r\n                (CASE WHEN \"WantedItemId\" IS NOT NULL THEN 1 ELSE 0 END)\r\n              ) = 1");
+                    table.ForeignKey(
+                        name: "FK_Images_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Images_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Images_Spots_SpotId",
+                        column: x => x.SpotId,
+                        principalTable: "Spots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Images_WantedItems_WantedItemId",
+                        column: x => x.WantedItemId,
+                        principalTable: "WantedItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -446,6 +467,16 @@ namespace TheWindCorner.Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_HomeSpotId",
+                table: "AspNetUsers",
+                column: "HomeSpotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_SpotId",
+                table: "AspNetUsers",
+                column: "SpotId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -453,14 +484,39 @@ namespace TheWindCorner.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Events_ImageId",
-                table: "Events",
-                column: "ImageId");
+                name: "IX_EventComments_EventId",
+                table: "EventComments",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventComments_OwnerId",
+                table: "EventComments",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_SpotId",
                 table: "Events",
                 column: "SpotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_EventId",
+                table: "Images",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ItemId",
+                table: "Images",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_SpotId",
+                table: "Images",
+                column: "SpotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_WantedItemId",
+                table: "Images",
+                column: "WantedItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemComments_ItemId",
@@ -471,11 +527,6 @@ namespace TheWindCorner.Data.Migrations
                 name: "IX_ItemComments_OwnerId",
                 table: "ItemComments",
                 column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_ImageId",
-                table: "Items",
-                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_OwnerId",
@@ -500,13 +551,7 @@ namespace TheWindCorner.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Spots_AddedByUserId",
                 table: "Spots",
-                column: "AddedByUserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Spots_ImageId",
-                table: "Spots",
-                column: "ImageId");
+                column: "AddedByUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WantedItemComments_OwnerId",
@@ -519,19 +564,57 @@ namespace TheWindCorner.Data.Migrations
                 column: "WantedItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WantedItems_ImageId",
-                table: "WantedItems",
-                column: "ImageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WantedItems_OwnerId",
                 table: "WantedItems",
                 column: "OwnerId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                table: "AspNetUserRoles",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Spots_HomeSpotId",
+                table: "AspNetUsers",
+                column: "HomeSpotId",
+                principalTable: "Spots",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Spots_SpotId",
+                table: "AspNetUsers",
+                column: "SpotId",
+                principalTable: "Spots",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Spots_AspNetUsers_AddedByUserId",
+                table: "Spots");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -548,7 +631,10 @@ namespace TheWindCorner.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Events");
+                name: "EventComments");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "ItemComments");
@@ -566,10 +652,10 @@ namespace TheWindCorner.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "Events");
 
             migrationBuilder.DropTable(
-                name: "Spots");
+                name: "Items");
 
             migrationBuilder.DropTable(
                 name: "WantedItems");
@@ -578,7 +664,7 @@ namespace TheWindCorner.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "Spots");
         }
     }
 }

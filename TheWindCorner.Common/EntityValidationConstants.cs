@@ -54,6 +54,12 @@
             public const int ContentMaxLength = 1000;
         }
 
+        public static class EventComment
+        {
+            public const int ContentMinLength = 2;
+            public const int ContentMaxLength = 1000;
+        }
+
         public static class User
         {
             public const int UsernameMinLength = 3;
