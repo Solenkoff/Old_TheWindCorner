@@ -4,6 +4,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using TheWindCorner.Data.Models.Enums;
+    using TheWindCorner.Data.Models.Entities;
     using TheWindCorner.Web.Infrastructure.Attributes;
 
     using static Common.EntityValidationConstants.Item;
